@@ -92,7 +92,7 @@ const result = await googleLoginAPI({username:decode.name,email:decode.email,pas
 if(result.status==200){
   toast.success("Login Successfull...")
   sessionStorage.setItem("token",result.data.token)
-  sessionStorage.setItem("user",JSON.stringify(result.data.token))
+  sessionStorage.setItem("user",JSON.stringify(result.data.user))
   setTimeout(()=>{
 if(result.data.user.role=="admin"){
   navigate('/admin/home')

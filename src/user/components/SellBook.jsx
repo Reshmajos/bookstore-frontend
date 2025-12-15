@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { FaPlus } from 'react-icons/fa';
+import { addBookAPI } from '../../services/allAPI';
+import { ToastContainer, toast } from 'react-toastify';
 
 function SellBook() {
   const[bookDetails,setBookDetails] = useState({
@@ -26,6 +28,49 @@ const handleUploadBookImage = (e)=>{
   bookImagesArray.push(url)
   setpreviewList(bookImagesArray)
   
+}
+
+const handleUploadBook = async()=>{
+  const {title,author,pages,price,discountPrice,imageURL,abstract,language,publisher,isbn,category,uploadImages} = bookDetails
+  if(title || author || pages || price || discountPrice || imageURL || abstract || language || publisher || isbn || category || uploadImages.length==0){
+    toast.info("Please fill the form completely....")
+  }else{
+    // api call - addBookapi
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization": `Bearer ${token}`
+      }
+      const reqBody = new FormData()
+      for(let key in bookDetails){
+        if(key != "uploadImages"){
+          reqBody.append(key,bookDetails[key])
+        }else{
+          bookDetails.uploadImages.forEach(imgFile=>{
+            reqBody.append("uploadImages",imgFile)
+          })
+        }
+      }
+      const result = await addBookAPI(reqBody,reqHeader)
+      console.log(result);
+      if(result.status==200){
+        toast.success("Book Added successfully")
+      }else if(result.status==401){
+        toast.warning(result.response.data)
+      }else{
+        toast.error("Something went wrong....")
+      }
+      resetUploadBookForm()
+    }
+  }
+}
+
+const resetUploadBookForm = ()=>{
+  setBookDetails({
+    title:"",author:"",pages:"",price:"",discountPrice:"",imageURL:"",abstract:"",language:"",publisher:"",isbn:"",category:"",uploadImages:[]
+  })
+  setPreview("")
+  setpreviewList([])
 }
 
 
@@ -79,7 +124,8 @@ const handleUploadBookImage = (e)=>{
             <input onChange={e=>handleUploadBookImage(e)} type="file" id='uploadImg' hidden />
             <img width={'200px'} src={preview?preview:"https://cdn.pixabay.com/photo/2016/01/03/00/43/upload-1118929_1280.png"} alt="" />
            </label>
-           {/* for more image upload */}
+              </div>
+                {/* for more image upload */}
            {
             preview &&
             <div className="flex justify-center items-center">
@@ -100,15 +146,23 @@ const handleUploadBookImage = (e)=>{
              }
             </div>
            }
-              </div>
+
                 </div>
             </div>
             <div className="flex justify-end items-center mt-5">
-              <button className='bg-gray-600 p-2 text-white rounded me-5 hover:bg-white hover:text-gray-400'>RESET</button>
-            <button className='bg-blue-600 p-2 text-white rounded hover:bg-white hover:text-gray-400'>SUBMIT</button>
+              <button onClick={resetUploadBookForm} className='bg-gray-600 p-2 text-white rounded me-5 hover:bg-white hover:text-gray-400'>RESET</button>
+            <button onClick={handleUploadBook} className='bg-blue-600 p-2 text-white rounded hover:bg-white hover:text-gray-400'>SUBMIT</button>
             </div>
             
         </div>
+
+         {/* toast */}
+              <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        theme="colored"
+        />
+
     </div>
   )
 }

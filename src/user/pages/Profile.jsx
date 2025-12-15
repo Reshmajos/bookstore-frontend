@@ -37,7 +37,7 @@ if(sessionStorage.getItem("token") && sessionStorage.getItem("user")){
       </div>
       {/* name with edit block */}
       <div className="flex justify-between items-center md:px-20 px-5 my-5">
-        <h1 className="text-2xl font-bold flex items-center ">{username?username:username} <FaCircleCheck className='text-blue-400 ms-5'/></h1>
+        <h1 className="text-2xl font-bold flex items-center ">{username} <FaCircleCheck className='text-blue-400 ms-5'/></h1>
         <Edit/>
       </div>
       <p className="text-justify md:px-20 px-5 my-5">“A book lover who enjoys spending time exploring fiction, self-help, and trending new releases. Always excited to discover fresh stories, inspiring ideas, and hidden gems. Loves a smooth browsing experience and enjoys adding favourite books to the wish-list for future reading..”</p>
