@@ -58,7 +58,7 @@ console.log(result);
 if(result.status==200){
   toast.success("Login Successfull...")
   sessionStorage.setItem("token",result.data.token)
-  sessionStorage.setItem("user",JSON.stringify(result.data.token))
+  sessionStorage.setItem("user",JSON.stringify(result.data.user))
   setTimeout(()=>{
 if(result.data.user.role=="admin"){
   navigate('/admin/home')

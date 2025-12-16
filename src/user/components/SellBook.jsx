@@ -32,7 +32,7 @@ const handleUploadBookImage = (e)=>{
 
 const handleUploadBook = async()=>{
   const {title,author,pages,price,discountPrice,imageURL,abstract,language,publisher,isbn,category,uploadImages} = bookDetails
-  if(title || author || pages || price || discountPrice || imageURL || abstract || language || publisher || isbn || category || uploadImages.length==0){
+  if(!title || !author || !pages || !price || !discountPrice || !imageURL || !abstract || !language || !publisher || !isbn || !category || uploadImages.length==0){
     toast.info("Please fill the form completely....")
   }else{
     // api call - addBookapi
@@ -151,7 +151,7 @@ const resetUploadBookForm = ()=>{
             </div>
             <div className="flex justify-end items-center mt-5">
               <button onClick={resetUploadBookForm} className='bg-gray-600 p-2 text-white rounded me-5 hover:bg-white hover:text-gray-400'>RESET</button>
-            <button onClick={handleUploadBook} className='bg-blue-600 p-2 text-white rounded hover:bg-white hover:text-gray-400'>SUBMIT</button>
+            <button onClick={handleUploadBook} className='bg-blue-600 p-2 text-white rounded hover:bg-white hover:text-gray-400'>ADD BOOK</button>
             </div>
             
         </div>
@@ -168,3 +168,4 @@ const resetUploadBookForm = ()=>{
 }
 
 export default SellBook
+
