@@ -28,10 +28,15 @@ export const getHomePageBooksAPI = async () =>{
 }
 
 // /books/all : bookpage api called by book component when page loads-authorised user can seen
-export const getAllBooksAPI = async (reqHeader) =>{
-    return await commonAPI("GET",`${serverURL}/books/all`,{},reqHeader)
+export const getAllBooksAPI = async (reqHeader,searchKey) =>{
+    return await commonAPI("GET",`${serverURL}/books/all?search=${searchKey}`,{},reqHeader)
 }
 //  /user-books/all : called by bookstatus when page loads
 export const getAllUserBooksAPI = async (reqHeader) =>{
     return await commonAPI("GET",`${serverURL}/user-books/all`,{},reqHeader)
+}
+
+// /user-books/bought : get request called by purchase component when it loads
+export const getAllUserBoughtBooksAPI = async (reqHeader) =>{
+    return await commonAPI("GET",`${serverURL}/user-books/bought`,{},reqHeader)
 }

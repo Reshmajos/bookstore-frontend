@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Footer from '../../components/Footer'
 import Header from '../components/Header'
 import { FaBars } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { getAllBooksAPI } from '../../services/allAPI'
+import { searchContext } from '../../contextAPI/ShareContext'
 
 
 function Books() {
-
+ const {searchKey,setSearchKey} = useContext(searchContext)
   const[showCategoryList,setshowCategoryList] = useState(false)
   const[token,setToken] = useState("")
   const[allBooks,setAllBooks] = useState([])
@@ -18,7 +19,7 @@ function Books() {
     const reqHeader = {
       "Authorization" : `Bearer ${token}`
     }
-    const result = await getAllBooksAPI(reqHeader)
+    const result = await getAllBooksAPI(reqHeader,searchKey)
     if(result.status==200){
       setAllBooks(result.data)
     }else{
@@ -33,7 +34,7 @@ function Books() {
       setToken(userToken)
       getAllBooks(userToken)
     }
-  },[])
+  },[searchKey])
 
   
   return (
@@ -48,7 +49,7 @@ function Books() {
       <h1 className="text-3xl font-bold my-5">All Books</h1>
       {/* search box */}
       <div className="flex my-5">
-        <input placeholder='Search by title' type="text" className='border p-2 border-gray-400 w-100'/>
+        <input value={searchKey} onChange={e=>setSearchKey(e.target.value)} placeholder='Search by title' type="text" className='border p-2 border-gray-400 w-100'/>
         <button className="bg-black p-2 text-white">Search</button>
       </div>
     </div>
