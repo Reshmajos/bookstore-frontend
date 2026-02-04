@@ -3,6 +3,7 @@ import { use } from 'react'
 import { FaAddressCard, FaBars, FaFacebook, FaInstagram, FaPowerOff, FaUser } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { Link, useNavigate } from 'react-router-dom'
+import serverURL from '../../services/serverURL'
 
 
 function Header() {
@@ -60,7 +61,7 @@ function Header() {
   :
 <div className="relative inline-block text-left ms-2">
   <button onClick={()=>setDropDown(!dropDown)} className="w-full bg-white px-3 py-2 shadow hover:bg-gray-50">
-    <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}}  src={dp?dp:"https://th.bing.com/th/id/OIP.St9mUbXptcUVd1cFzUqF3wHaIi?w=173&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"} alt="" />
+    <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}}  src={dp?dp.startsWith("https://1h3.googleusercontent.com")?dp:`${serverURL}/uploads/${dp}`:"https://th.bing.com/th/id/OIP.St9mUbXptcUVd1cFzUqF3wHaIi?w=173&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"} alt="" />
   </button>
   {
     dropDown &&
@@ -87,7 +88,7 @@ function Header() {
   :
 <div className="relative inline-block text-left ms-2">
   <button onClick={()=>setDropDown(!dropDown)} className="w-full bg-white px-3 py-2 shadow hover:bg-gray-50">
-    <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}}  src={dp?dp:"https://th.bing.com/th/id/OIP.St9mUbXptcUVd1cFzUqF3wHaIi?w=173&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"} alt="" />
+    <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}}src={dp?dp.startsWith("https://lh3.googleusercontent.com/")?dp:`${serverURL}/uploads/${dp}`:"https://th.bing.com/th/id/OIP.St9mUbXptcUVd1cFzUqF3wHaIi?w=173&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"} alt="" />
   </button>
   {
     dropDown &&

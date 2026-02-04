@@ -1,10 +1,74 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
 import AdminSideBar from '../components/AdminSideBar'
+import { getAllAdminBooksAPI, getAllUsersAPI, updateBookStatusAPI } from '../../services/allAPI'
+import serverURL from '../../services/serverURL'
+import { ToastContainer, toast } from 'react-toastify';
 
 function AdminCollection() {
    const[tab,setTab] = useState(1)
+   const[allBooks,setAllBooks] = useState([])
+   const[allUsers,setAllUsers] = useState([])
+
+   console.log(allBooks);
+   console.log(allUsers);
+   
+   
+
+   useEffect(()=>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+      if(tab==1){
+        getAllBooks(token)
+      }else if(tab==2){
+        getAllUsers(token)
+      }
+    }
+   },[tab])
+
+   const getAllBooks = async (token)=>{
+    const reqHeader = {
+      "Authorization" : `Bearer ${token}`
+    }
+    const result = await getAllAdminBooksAPI(reqHeader)
+    if(result.status==200){
+      setAllBooks(result.data)
+    }else {
+      console.log(result);
+      
+    }
+   }
+
+   const getAllUsers = async (token)=>{
+    const reqHeader = {
+      "Authorization" : `Bearer ${token}`
+    }
+    const result = await getAllUsersAPI(reqHeader)
+    if(result.status==200){
+      setAllUsers(result.data)
+    }else {
+      console.log(result);
+      
+    }
+   }
+
+   const updateBookStatus = async (id)=>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+      "Authorization" : `Bearer ${token}`
+    }
+    const result = await updateBookStatusAPI(id,reqHeader)
+    if(result.status==200){
+toast.success("Book status updated")
+getAllBooks(token)
+    }else{
+      console.log(result);
+      
+    }
+    }
+   }
 
   return (
     <>
@@ -26,53 +90,31 @@ function AdminCollection() {
             tab==1 &&
             <div className='md:grid grid-cols-4 w-full my-5'>
               {/* duplicate book card */}
-              <div className="shadow rounded p-3 mx-4 mb-5 md:mb-0">
-  <img src="https://m.media-amazon.com/images/I/81q77Q39nEL.jpg" alt="book" />
+              {
+                allBooks?.length>0?
+                allBooks?.map(book=>(
+                  <div key={book?._id} className="shadow rounded p-3 mx-4 mb-5 md:mb-0">
+  <img src={book?.imageURL} alt="book" />
   <div className="flex justify-center items-center mt-4 flex-col">
-    <h3 className="text-blue-600 font-bold text-lg">Author</h3>
-    <h4>title</h4>
-    <h4>$ price</h4>
-    <div className='grid mt-3 w-full'>
-      <button className='bg-green-600  p-2 text-white'>APPROVE</button>
+    <h3 className="text-blue-600 font-bold text-lg">{book?.author}</h3>
+    <h4>{book?.title}</h4>
+    <h4>$ {book?.discountPrice}</h4>
+    <div className='grid mt-3 w-full '>
+      {
+        book?.status != "approved" ?
+        <button onClick={()=>updateBookStatus(book?._id)} className='bg-green-600  p-2 text-white'>APPROVE</button>
+        :
+        <img width={'40px'} src="https://static.vecteezy.com/system/resources/previews/010/152/436/original/tick-check-mark-icon-sign-symbol-design-free-png.png" alt="" />
+          }
       </div>
   </div>
             </div>
-            {/* duplicate book card */}
-              <div className="shadow rounded p-3 mx-4 mb-5 md:mb-0">
-  <img src="https://m.media-amazon.com/images/I/81q77Q39nEL.jpg" alt="book" />
-  <div className="flex justify-center items-center mt-4 flex-col">
-    <h3 className="text-blue-600 font-bold text-lg">Author</h3>
-    <h4>title</h4>
-    <h4>$ price</h4>
-    <div className='grid mt-3 w-full'>
-      <button className='bg-green-600  p-2 text-white'>APPROVE</button>
-      </div>
-  </div>
-            </div>
-            {/* duplicate book card */}
-              <div className="shadow rounded p-3 mx-4 mb-5 md:mb-0">
-  <img src="https://m.media-amazon.com/images/I/81q77Q39nEL.jpg" alt="book" />
-  <div className="flex justify-center items-center mt-4 flex-col">
-    <h3 className="text-blue-600 font-bold text-lg">Author</h3>
-    <h4>title</h4>
-    <h4>$ price</h4>
-    <div className='grid mt-3 w-full'>
-      <button className='bg-green-600  p-2 text-white'>APPROVE</button>
-      </div>
-  </div>
-            </div>
-            {/* duplicate book card */}
-              <div className="shadow rounded p-3 mx-4 mb-5 md:mb-0">
-  <img src="https://m.media-amazon.com/images/I/81q77Q39nEL.jpg" alt="book" />
-  <div className="flex justify-center items-center mt-4 flex-col">
-    <h3 className="text-blue-600 font-bold text-lg">Author</h3>
-    <h4>title</h4>
-    <h4>$ price</h4>
-    <div className='grid mt-3 w-full'>
-      <button className='bg-green-600  p-2 text-white'>APPROVE</button>
-      </div>
-  </div>
-            </div>
+                ))
+                :
+                <p>Loading......</p>
+              }
+          
+              
             </div>
           }
           {/* users */}
@@ -80,55 +122,35 @@ function AdminCollection() {
             tab==2 &&
             <div className='md:grid grid-cols-3 w-full my-5'>
               {/* duplicate users card */}
-              <div className="rounded bg-gray-200 m-2 p-3 text-wrap">
-                <p className="text-red-600 font-bold">ID:fddfs345455n</p>
+              {
+                allUsers?.length>0?
+                allUsers?.map(user=>(
+                  <div key={user?._id} className="rounded bg-gray-200 m-2 p-3 text-wrap">
+                <p className="text-red-600 font-bold">{user?._id}</p>
                 <div className="flex items-center text-wrap mt-3">
-               <img width={'100px'} height={'100px'} src="https://freepngimg.com/download/icon/thoughts/10268-woman-user-circle.png" alt="" />
+               <img width={'100px'} height={'100px'} src={user?.picture?user?.picture.startsWith("https://1h3.googleusercontent.com")?user?.picture:`${serverURL}/uploads/${user.picture}`:"https://freepngimg.com/download/icon/thoughts/10268-woman-user-circle.png"} alt="" />
                {/* content */}
                <div className='ms-5'>
-                <h4 className="font-bold text-2xl text-blue-800 ">name</h4>
-                <p>demo@gmail.com</p>
+                <h4 className="font-bold text-2xl text-blue-800 ">{user?.username}</h4>
+                <p>{user?.email}</p>
                </div>
                 </div>
               </div>
-               <div className="rounded bg-gray-200 m-2 p-3 text-wrap">
-                <p className="text-red-600 font-bold">ID:fddfs345455n</p>
-                <div className="flex items-center text-wrap mt-3">
-               <img width={'100px'} height={'100px'} src="https://freepngimg.com/download/icon/thoughts/10268-woman-user-circle.png" alt="" />
-               {/* content */}
-               <div className='ms-5'>
-                <h4 className="font-bold text-2xl text-blue-800 ">name</h4>
-                <p>demo@gmail.com</p>
-               </div>
-                </div>
-              </div>
-               <div className="rounded bg-gray-200 m-2 p-3 text-wrap">
-                <p className="text-red-600 font-bold">ID:fddfs345455n</p>
-                <div className="flex items-center text-wrap mt-3">
-               <img width={'100px'} height={'100px'} src="https://freepngimg.com/download/icon/thoughts/10268-woman-user-circle.png" alt="" />
-               {/* content */}
-               <div className='ms-5'>
-                <h4 className="font-bold text-2xl text-blue-800 ">name</h4>
-                <p>demo@gmail.com</p>
-               </div>
-                </div>
-              </div>
-               <div className="rounded bg-gray-200 m-2 p-3 text-wrap">
-                <p className="text-red-600 font-bold">ID:fddfs345455n</p>
-                <div className="flex items-center text-wrap mt-3">
-               <img width={'100px'} height={'100px'} src="https://freepngimg.com/download/icon/thoughts/10268-woman-user-circle.png" alt="" />
-               {/* content */}
-               <div className='ms-5'>
-                <h4 className="font-bold text-2xl text-blue-800 ">name</h4>
-                <p>demo@gmail.com</p>
-               </div>
-                </div>
-              </div>
+                ))
+                :
+                <p>Loading.......</p>
+              }
             </div>
           }
         </div>
       </div>
       <Footer/>
+      {/* toast */}
+            <ToastContainer
+      position="top-right"
+      autoClose={2000}
+      theme="colored"
+      />
       </>
   )
 }

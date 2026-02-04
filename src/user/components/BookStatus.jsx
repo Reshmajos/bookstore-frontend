@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllUserBooksAPI } from '../../services/allAPI'
+import { getAllUserBooksAPI, removeBookAPI } from '../../services/allAPI'
 
 function BookStatus() {
 
@@ -26,6 +26,23 @@ function BookStatus() {
             }
         }
     }
+ 
+const deleteBook = async (id)=>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+            const reqHeader = {
+                "Authorization":`Bearer ${token}`
+            }
+            const result = await removeBookAPI(id,reqHeader)
+            if(result.status==200){
+            getUserUploadBooks()
+            }else{
+                console.log(result);
+                
+            }
+        }
+    }
+
 
   return (
     <div className='p-10 my-20 mx-5 shadow rounded'>
@@ -49,18 +66,18 @@ function BookStatus() {
                 
         {
             book?.status=="pending"?
-            <img width={'120px'} height={'120px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="" />
+            <img width={'120px'} height={'120px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending" />
             : book?.status=="approved"?
-            <img width={'80px'} height={'80px'} src="https://static.vecteezy.com/system/resources/previews/024/382/936/large_2x/approved-sign-with-checkmark-symbol-icon-label-stamp-green-round-design-transparent-background-free-png.png" alt="" />
+            <img width={'80px'} height={'80px'} src="https://static.vecteezy.com/system/resources/previews/024/382/936/large_2x/approved-sign-with-checkmark-symbol-icon-label-stamp-green-round-design-transparent-background-free-png.png" alt="approved" />
             :
-         <img width={'80px'} height={'80px'} src="https://www.onlygfx.com/wp-content/uploads/2017/12/sold-stamp-1.png" alt="" />
+         <img width={'80px'} height={'80px'} src="https://www.onlygfx.com/wp-content/uploads/2017/12/sold-stamp-1.png" alt="sold" />
         }
             </div>
         </div>
         <div className='px-4 mt-4 md:mt-0'>
             <img className='w-full' src={book?.imageURL} alt="" />
             <div className='flex justify-end'>
-                <button className="p-2 bg-red-600 text-white mt-5">DELETE</button>
+                <button onClick={()=>deleteBook(book?._id)} className="p-2 bg-red-600 text-white mt-5">DELETE</button>
                 </div>
         </div>
     </div>

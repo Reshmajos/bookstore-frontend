@@ -6,6 +6,7 @@ import Edit from '../components/Edit'
 import SellBook from '../components/SellBook'
 import Purchase from '../components/Purchase'
 import BookStatus from '../components/BookStatus'
+import serverURL from '../../services/serverURL'
 
 
 
@@ -33,7 +34,7 @@ if(sessionStorage.getItem("token") && sessionStorage.getItem("user")){
       <div style={{height:'200px'}} className="bg-black"></div>
       {/* profile image */}
       <div style={{width:'230px',height:'230px',borderRadius:'50%',marginLeft:'70px',marginTop:"-130px"}} className="bg-white p-3">
-        <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={dp?dp:"https://img.freepik.com/premium-photo/girl-happy-portrait-user-profile-by-ai_1119669-10.jpg"} alt="" />
+        <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={dp?dp.startsWith("https://1h3.googleusercontent.com")?dp:`${serverURL}/uploads/${dp}`:"https://th.bing.com/th/id/OIP.St9mUbXptcUVd1cFzUqF3wHaIi?w=173&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"} alt="" />
       </div>
       {/* name with edit block */}
       <div className="flex justify-between items-center md:px-20 px-5 my-5">
